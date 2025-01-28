@@ -1,30 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR.js Example</title>
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.0.0/aframe/build/aframe-ar.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Monuments and Scenery of India</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 </head>
 <body>
-  <!-- AR.js Scene -->
-  <a-scene embedded arjs>
-    <!-- Marker -->
-    <a-marker preset="hiro">
-      <!-- 3D Box -->
-      <a-box position="0 0.5 0" color="#4CC3D9" scale="1 1 1"></a-box>
-    </a-marker>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
 
-    <!-- AR.js Camera -->
-    <a-entity camera></a-entity>
-  </a-scene>
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(10, 20, 10);
+        scene.add(pointLight);
+
+        // Ground
+        const groundGeometry = new THREE.PlaneGeometry(100, 100);
+        const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22 });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -1;
+        scene.add(ground);
+
+        // Taj Mahal (simplified representation)
+        const domeGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+        const domeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const dome = new THREE.Mesh(domeGeometry, domeMaterial);
+        dome.position.set(0, 2, 0);
+        scene.add(dome);
+
+        const baseGeometry = new THREE.BoxGeometry(4, 1, 4);
+        const baseMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const base = new THREE.Mesh(baseGeometry, baseMaterial);
+        base.position.set(0, 0.5, 0);
+        scene.add(base);
+
+        // Himalayas (simplified peaks)
+        const mountainGeometry1 = new THREE.ConeGeometry(5, 10, 4);
+        const mountainMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+        const mountain1 = new THREE.Mesh(mountainGeometry1, mountainMaterial);
+        mountain1.position.set(-15, 5, -20);
+        scene.add(mountain1);
+
+        const mountainGeometry2 = new THREE.ConeGeometry(4, 8, 4);
+        const mountain2 = new THREE.Mesh(mountainGeometry2, mountainMaterial);
+        mountain2.position.set(-10, 4, -18);
+        scene.add(mountain2);
+
+        // Palm Tree (simplified)
+        const trunkGeometry = new THREE.CylinderGeometry(0.3, 0.3, 5, 12);
+        const trunkMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+        const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+        trunk.position.set(10, 2.5, 5);
+        scene.add(trunk);
+
+        const leafGeometry = new THREE.ConeGeometry(2, 3, 8);
+        const leafMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22 });
+        for (let i = 0; i < 4; i++) {
+            const leaf = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf.position.set(10, 5.5, 5);
+            leaf.rotation.x = Math.PI / 2;
+            leaf.rotation.y = (Math.PI / 2) * i;
+            scene.add(leaf);
+        }
+
+        // Camera position
+        camera.position.z = 20;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Adjust canvas on window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
 
